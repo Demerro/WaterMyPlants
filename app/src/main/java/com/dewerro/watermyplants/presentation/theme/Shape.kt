@@ -1,4 +1,4 @@
-package com.dewerro.watermyplants.ui.theme
+package com.dewerro.watermyplants.presentation.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes
