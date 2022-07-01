@@ -23,7 +23,9 @@
 
         <activity
             android:name=".presentation.MainActivity"
+            android:configChanges="orientation"
             android:exported="true"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.WaterMyPlants">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

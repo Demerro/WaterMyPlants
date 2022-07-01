@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">WaterMyPlants</string>
+    <string name="watering_reminder">Watering reminder</string>
 </resources>

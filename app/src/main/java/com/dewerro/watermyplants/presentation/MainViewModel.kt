@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.lifecycle.ViewModel
+import com.dewerro.watermyplants.R
 import com.dewerro.watermyplants.presentation.utils.AlarmReceiver
 import com.dewerro.watermyplants.presentation.utils.NotificationChannelInfo
 
@@ -27,7 +28,7 @@ class MainViewModel : ViewModel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 NotificationChannelInfo.CHANNEL_ID,
-                NotificationChannelInfo.CHANNEL_NAME,
+                context.getString(R.string.watering_reminder),
                 NotificationManager.IMPORTANCE_HIGH
             ).apply { description = NotificationChannelInfo.CHANNEL_DESCRIPTION }
 

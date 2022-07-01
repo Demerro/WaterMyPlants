@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -17,9 +18,12 @@ class AlarmReceiver : BroadcastReceiver() {
     }
 
     private fun createNotification(context: Context) {
+        val color = Color.argb(0, 28, 163, 236)
+
         val builder =
             NotificationCompat.Builder(context, NOTIFICATION_ID_STRING)
                 .setSmallIcon(R.drawable.ic_water_drop)
+                .setColor(color)
                 .setContentText("Hibiscus waiting water")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setCategory(NotificationCompat.CATEGORY_REMINDER)
