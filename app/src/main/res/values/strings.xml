@@ -1,4 +1,50 @@
 <resources>
     <string name="app_name">WaterMyPlants</string>
     <string name="watering_reminder">Watering reminder</string>
+    <string name="title">Title</string>
+    <string name="size">Size</string>
+    <string name="humidity">Humidity</string>
+    <string name="light">Light</string>
+    <string name="temperature">Temperature</string>
+    <string name="category">Category</string>
+    <string name="plant">Plant</string>
+    <string name="watering">Watering</string>
+    <string name="random_fact">Random fact</string>
+    <string name="add_new_plant">Add new plant</string>
+    <string name="set_watering_interval">Set watering interval</string>
+    <string name="add_plant">Add plant</string>
+    <string name="cancel">Cancel</string>
+    <string-array name="sizes">
+        <item name="small">Small</item>
+        <item name="medium">Medium</item>
+        <item name="large">Large</item>
+    </string-array>
+    <string-array name="lights">
+        <item name="directed">Directed</item>
+        <item name="diffused">Diffused</item>
+        <item name="reflected">Reflected</item>
+        <item name="sky_light">Sky Light</item>
+    </string-array>
+    <string-array name="facts">
+        <item>The very expensive spice, saffron, comes from a type of crocus flower.</item>
+        <item>The juice from bluebell flowers was used historically to make glue.</item>
+        <item>Asparagus is a member of the Lily family.</item>
+        <item>In the 1600s, tulip bulbs in Holland were worth more than gold, which in turn led to a crash of the Dutch economy.</item>
+        <item>84% of an apple is water, 96% for a cucumber. An earthworm is 80% water.</item>
+        <item>The word "fruit" is a botanical term, while "vegetable" is a culinary term.</item>
+        <item>A notch in a tree will stay the same distance from the ground as the tree grows.</item>
+        <item>Peanuts are NOT nuts but are related to beans and lentils.</item>
+        <item>Bamboo is the fastest-growing woody plant in the world; it can grow 35 inches in a single day.</item>
+        <item>Vanilla flavoring comes from the pod of an orchid, Vanilla planifolia. Though the pods are called vanilla beans, they\'re more closely related to corn than green beans.</item>
+        <item>Small pockets of air inside cranberries cause them to bounce and float in water.</item>
+        <item>The first potatoes were cultivated in Peru about 7,000 years ago.</item>
+        <item>The average strawberry has 200 seeds. It\'s the only fruit that bears its seeds on the outside.</item>
+        <item>The tears during cutting an onion are caused by sulphuric acid present in them.</item>
+        <item>A sunflower looks like one large flower, but each head is composed of hundreds of tiny flowers called florets, which ripen to become the seeds.</item>
+        <item>Oak trees are struck by lightning more than any other tree.</item>
+        <item>The smell of freshly-cut grass is actually a plant distress call.</item>
+        <item>There are over 200,000 identified plant species and the list is growing all the time.</item>
+        <item>90 percent of the foods humans eat come from just 30 plants.</item>
+        <item>An average size tree can provide enough wood to make 170,100 pencils.</item>
+    </string-array>
 </resources>
