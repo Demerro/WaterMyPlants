@@ -1,13 +1,9 @@
 package com.dewerro.watermyplants.presentation.views
 
-import android.Manifest
 import android.app.TimePickerDialog
-import android.util.Log
-import android.view.ViewGroup
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.Preview
-import androidx.camera.view.PreviewView
+import android.net.Uri
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -21,33 +17,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import com.dewerro.watermyplants.R
 import com.dewerro.watermyplants.presentation.MainViewModel
+import com.dewerro.watermyplants.presentation.components.CameraCapture
+import com.dewerro.watermyplants.presentation.components.GallerySelect
+import com.dewerro.watermyplants.presentation.navigation.Screen
 import com.dewerro.watermyplants.presentation.theme.Shapes
 import com.dewerro.watermyplants.presentation.theme.Typography
-import com.dewerro.watermyplants.presentation.utils.getCameraProvider
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberPermissionState
-import kotlinx.coroutines.launch
+import com.dewerro.watermyplants.presentation.utils.GetOnceResult
 import java.util.*
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun SetPlantScreen(viewModel: MainViewModel, navController: NavHostController) {
     val context = LocalContext.current
-    val permissionState = rememberPermissionState(Manifest.permission.CAMERA)
-
-    LaunchedEffect(permissionState) {
-        permissionState.launchPermissionRequest()
-    }
 
     val title = remember { mutableStateOf("") }
     val humidity = remember { mutableStateOf("") }
@@ -64,6 +54,18 @@ fun SetPlantScreen(viewModel: MainViewModel, navController: NavHostController) {
     val timePickerDialog = TimePickerDialog(context, { _, mHour: Int, mMinute: Int ->
         time.value = "$mHour:$mMinute"
     }, hour, minute, true)
+
+    val photoUri = remember { mutableStateOf<Uri?>(null) }
+    navController.GetOnceResult<Uri>("photo_file_uri") {
+        photoUri.value = it
+    }
+
+    var showGallerySelect by remember { mutableStateOf(false) }
+    if (showGallerySelect) {
+        GallerySelect {
+            photoUri.value = it
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -97,9 +99,23 @@ fun SetPlantScreen(viewModel: MainViewModel, navController: NavHostController) {
                             .clip(Shapes.medium),
                         contentAlignment = Alignment.BottomEnd
                     ) {
-                        CameraPreview()
+                        if (photoUri.value != null) {
+                            AsyncImage(
+                                model = photoUri.value,
+                                contentDescription = "Plant Photo",
+                                contentScale = ContentScale.Crop
+                            )
+                        } else {
+                            CameraCapture(
+                                modifier = Modifier.clickable {
+                                    navController.navigate(Screen.CameraScreen.route)
+                                }
+                            )
+                        }
                         FloatingActionButton(
-                            onClick = { /*TODO*/ },
+                            onClick = {
+                                showGallerySelect = true
+                            },
                             shape = RoundedCornerShape(topStart = 10.dp),
                             backgroundColor = MaterialTheme.colors.primary
                         ) {
@@ -120,7 +136,7 @@ fun SetPlantScreen(viewModel: MainViewModel, navController: NavHostController) {
                         )
                         PlantField(
                             value = humidity.value,
-                            onValueChange = { humidity.value = it },
+                            onValueChange = { if (it.length <= 3) humidity.value = it },
                             imageVector = Icons.Default.WaterDrop,
                             labelText = stringResource(R.string.humidity),
                             modifier = Modifier
@@ -183,7 +199,7 @@ fun SetPlantScreen(viewModel: MainViewModel, navController: NavHostController) {
                         .fillMaxWidth()
                         .height(50.dp),
                     shape = Shapes.medium,
-                    border = BorderStroke(1.dp, MaterialTheme.colors.secondary)
+                    border = BorderStroke(1.dp, MaterialTheme.colors.secondary.copy(0.2f))
                 ) {
                     Text(
                         text = stringResource(R.string.set_watering_interval),
@@ -200,7 +216,7 @@ fun SetPlantScreen(viewModel: MainViewModel, navController: NavHostController) {
         ) {
             OutlinedButton(
                 onClick = { navController.navigateUp() },
-                border = BorderStroke(1.dp, MaterialTheme.colors.secondary),
+                border = BorderStroke(1.dp, MaterialTheme.colors.secondary.copy(0.2f)),
                 modifier = Modifier.width(150.dp)
             ) {
                 Text(
@@ -251,50 +267,10 @@ fun PlantField(
         shape = Shapes.medium,
         modifier = modifier,
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            leadingIconColor = MaterialTheme.colors.primary
+            leadingIconColor = MaterialTheme.colors.primary,
+            unfocusedBorderColor = MaterialTheme.colors.secondary.copy(0.2f)
         ),
         keyboardActions = KeyboardActions(onDone = { focus.moveFocus(FocusDirection.Down) })
-    )
-}
-
-@Composable
-fun CameraPreview(
-    modifier: Modifier = Modifier,
-    scaleType: PreviewView.ScaleType = PreviewView.ScaleType.FILL_CENTER,
-    cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-) {
-    val coroutineScope = rememberCoroutineScope()
-    val lifecycleOwner = LocalLifecycleOwner.current
-
-    AndroidView(
-        modifier = modifier,
-        factory = { context ->
-            val previewView = PreviewView(context).apply {
-                this.scaleType = scaleType
-                layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT
-                )
-            }
-
-            val previewUseCase = Preview.Builder().build().also {
-                it.setSurfaceProvider(previewView.surfaceProvider)
-            }
-
-            coroutineScope.launch {
-                val cameraProvider = context.getCameraProvider()
-                try {
-                    cameraProvider.unbindAll()
-                    cameraProvider.bindToLifecycle(
-                        lifecycleOwner, cameraSelector, previewUseCase
-                    )
-                } catch (e: Exception) {
-                    Log.e("CameraPreview", "Use case binding failed", e)
-                }
-            }
-
-            return@AndroidView previewView
-        }
     )
 }
 
@@ -313,7 +289,7 @@ fun DropDownMenu(
             onClick = { expandedState = true },
             modifier = modifier,
             shape = Shapes.medium,
-            border = BorderStroke(1.dp, MaterialTheme.colors.secondary)
+            border = BorderStroke(1.dp, MaterialTheme.colors.secondary.copy(0.2f))
         ) {
             Row(
                 horizontalArrangement = Arrangement.Start,

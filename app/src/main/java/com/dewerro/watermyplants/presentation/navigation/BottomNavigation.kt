@@ -6,7 +6,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 
@@ -25,7 +24,7 @@ fun AppBottomNavigation(navController: NavController) {
                 icon = { Icon(imageVector = item.icon, contentDescription = item.navRoute) },
                 selected = currentRoute == item.navRoute,
                 selectedContentColor = MaterialTheme.colors.primary,
-                unselectedContentColor = Color.Gray,
+                unselectedContentColor = MaterialTheme.colors.secondary,
                 onClick = {
                     navController.navigate(item.navRoute) {
                         navController.graph.startDestinationRoute?.let { screen_route ->

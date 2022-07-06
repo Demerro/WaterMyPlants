@@ -58,8 +58,14 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
 
+    // Constraint Layout
+    implementation "androidx.constraintlayout:constraintlayout-compose:$constraint_layout_version"
+
     // Navigation
     implementation "androidx.navigation:navigation-compose:$navigation_version"
+
+    // LiveData
+    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
 
     // Material Design
     implementation "androidx.compose.material:material:$compose_version"
@@ -72,6 +78,9 @@ dependencies {
     implementation "androidx.camera:camera-camera2:$camerax_version"
     implementation "androidx.camera:camera-view:$camerax_version"
     implementation "androidx.camera:camera-lifecycle:$camerax_version"
+
+    // Coil
+    implementation "io.coil-kt:coil-compose:$coil_version"
 
     // Room Database
     implementation "androidx.room:room-runtime:$room_version"

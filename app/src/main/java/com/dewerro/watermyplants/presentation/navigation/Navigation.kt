@@ -8,6 +8,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.dewerro.watermyplants.presentation.views.CameraScreen
 import com.dewerro.watermyplants.presentation.views.ListScreen
 import com.dewerro.watermyplants.presentation.views.PlantScreen
 import com.dewerro.watermyplants.presentation.views.SetPlantScreen
@@ -25,7 +26,8 @@ fun Navigation() {
         ) {
             composable(Screen.PlantScreen.route) { PlantScreen() }
             composable(Screen.ListScreen.route) { ListScreen(viewModel(), navController) }
-            composable(Screen.SetPlantScreen.route) { SetPlantScreen(navController) }
+            composable(Screen.SetPlantScreen.route) { SetPlantScreen(viewModel(), navController) }
+            composable(Screen.CameraScreen.route) { CameraScreen(navController) }
         }
     }
 }
