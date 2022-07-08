@@ -9,6 +9,6 @@ sealed class NavItem(
     val icon: ImageVector,
     val navRoute: String
 ) {
-    object Home : NavItem(Icons.Default.Compost, Screen.PlantScreen.route)
+    object Home : NavItem(Icons.Default.Compost, "${Screen.PlantScreen.route}/{plantJsonString}")
     object List : NavItem(Icons.Default.List, Screen.ListScreen.route)
 }

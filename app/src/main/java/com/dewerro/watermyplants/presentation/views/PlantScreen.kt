@@ -1,6 +1,5 @@
 package com.dewerro.watermyplants.presentation.views
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -15,132 +14,160 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.dewerro.watermyplants.R
+import com.dewerro.watermyplants.domain.model.Plant
+import com.dewerro.watermyplants.presentation.MainViewModel
 import com.dewerro.watermyplants.presentation.theme.Shapes
 import com.dewerro.watermyplants.presentation.theme.Typography
 
 @Composable
-fun PlantScreen() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(start = 20.dp, end = 20.dp)
-    ) {
-        Text(
-            text = "Cereus Cactus",
-            modifier = Modifier.padding(top = 15.dp, bottom = 15.dp),
-            style = Typography.h1
-        )
-        Row(
+fun PlantScreen(plant: Plant?, viewModel: MainViewModel = hiltViewModel()) {
+
+    val state = viewModel.state.value
+
+    val _plant = plant ?: if (state.plantList.isNotEmpty())
+        state.plantList.random()
+    else
+        null
+
+
+    if (_plant != null) {
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(300.dp)
+                .fillMaxSize()
+                .padding(start = 20.dp, end = 20.dp)
         ) {
-            Image(
-                painter = painterResource(R.drawable.cactus),
-                contentDescription = "Plant Image",
-                modifier = Modifier
-                    .width(200.dp)
-                    .clip(Shapes.medium)
+            Text(
+                text = "${_plant.plant} ${_plant.type}",
+                modifier = Modifier.padding(top = 15.dp, bottom = 15.dp),
+                style = Typography.h1
             )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp)
+            ) {
+                AsyncImage(
+                    model = _plant.photoUriString.toUri(),
+                    contentDescription = "Plant Image",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .width(200.dp)
+                        .clip(Shapes.medium)
+                )
+                Card(
+                    modifier = Modifier.padding(start = 20.dp),
+                    shape = Shapes.medium
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(start = 10.dp, end = 10.dp),
+                        horizontalAlignment = Alignment.Start,
+                        verticalArrangement = Arrangement.SpaceAround
+                    ) {
+                        PlantParameter(
+                            modifier = Modifier.fillMaxWidth(),
+                            imageVector = Icons.Default.Straighten,
+                            description = stringResource(R.string.size),
+                            value = _plant.size
+                        )
+                        Divider()
+                        PlantParameter(
+                            modifier = Modifier.fillMaxWidth(),
+                            imageVector = Icons.Default.WaterDrop,
+                            description = stringResource(R.string.humidity),
+                            value = "${_plant.humidity}%"
+                        )
+                        Divider()
+                        PlantParameter(
+                            modifier = Modifier.fillMaxWidth(),
+                            imageVector = Icons.Default.WbSunny,
+                            description = stringResource(R.string.light),
+                            value = _plant.light
+                        )
+                        Divider()
+                        PlantParameter(
+                            modifier = Modifier.fillMaxWidth(),
+                            imageVector = Icons.Default.Thermostat,
+                            description = stringResource(R.string.temperature),
+                            value = "${_plant.temperature}°"
+                        )
+                    }
+                }
+            }
             Card(
-                modifier = Modifier.padding(start = 20.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp),
+                shape = Shapes.medium
+            ) {
+                Column {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(60.dp)
+                            .padding(10.dp),
+                        horizontalArrangement = Arrangement.SpaceAround,
+                    ) {
+                        PlantParameter(
+                            description = stringResource(R.string.category),
+                            value = _plant.category
+                        )
+                        VerticalDivider()
+                        PlantParameter(
+                            description = stringResource(R.string.plant),
+                            value = _plant.plant
+                        )
+                        VerticalDivider()
+                        PlantParameter(
+                            description = stringResource(R.string.watering),
+                            value = _plant.wateringTime
+                        )
+                    }
+                }
+            }
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp, bottom = 20.dp),
                 shape = Shapes.medium
             ) {
                 Column(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(start = 10.dp, end = 10.dp),
-                    horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.SpaceAround
-                ) {
-                    PlantParameter(
-                        modifier = Modifier.fillMaxWidth(),
-                        imageVector = Icons.Default.Straighten,
-                        description = stringResource(R.string.size),
-                        value = "Small"
-                    )
-                    Divider()
-                    PlantParameter(
-                        modifier = Modifier.fillMaxWidth(),
-                        imageVector = Icons.Default.WaterDrop,
-                        description = stringResource(R.string.humidity),
-                        value = "64%"
-                    )
-                    Divider()
-                    PlantParameter(
-                        modifier = Modifier.fillMaxWidth(),
-                        imageVector = Icons.Default.WbSunny,
-                        description = stringResource(R.string.light),
-                        value = "Diffuse"
-                    )
-                    Divider()
-                    PlantParameter(
-                        modifier = Modifier.fillMaxWidth(),
-                        imageVector = Icons.Default.Thermostat,
-                        description = stringResource(R.string.temperature),
-                        value = "18-22 C"
-                    )
-                }
-            }
-        }
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 20.dp),
-            shape = Shapes.medium
-        ) {
-            Column {
-                Row(
-                    modifier = Modifier
                         .fillMaxWidth()
-                        .height(60.dp)
-                        .padding(10.dp),
-                    horizontalArrangement = Arrangement.SpaceAround,
+                        .padding(20.dp)
                 ) {
-                    PlantParameter(
-                        description = stringResource(R.string.category),
-                        value = "Indoor"
+                    Text(
+                        text = stringResource(R.string.random_fact),
+                        style = Typography.h2
                     )
-                    VerticalDivider()
-                    PlantParameter(
-                        description = stringResource(R.string.plant),
-                        value = "Cactus"
-                    )
-                    VerticalDivider()
-                    PlantParameter(
-                        description = stringResource(R.string.watering),
-                        value = "Evey 8 hours"
+                    Text(
+                        text = stringArrayResource(R.array.facts).random(),
+                        color = MaterialTheme.colors.secondary,
+                        style = Typography.h4
                     )
                 }
             }
         }
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 20.dp, bottom = 20.dp),
-            shape = Shapes.medium
+    } else {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.random_fact),
-                    style = Typography.h2
-                )
-                Text(
-                    text = stringArrayResource(R.array.facts).random(),
-                    color = MaterialTheme.colors.secondary,
-                    style = Typography.h4
-                )
-            }
+            Text(
+                text = stringResource(R.string.your_plant_will_be_displayed_here),
+                style = Typography.h3,
+                color = MaterialTheme.colors.primary
+            )
         }
     }
 }
