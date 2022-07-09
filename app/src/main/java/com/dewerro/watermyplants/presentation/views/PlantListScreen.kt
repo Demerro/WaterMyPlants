@@ -91,7 +91,8 @@ fun PlantListScreen(
                                                             .replace('/', '$')
                                                     }"
                                         )
-                                    }.padding(10.dp),
+                                    }
+                                    .padding(10.dp),
                                 type = state.plantList[index].type,
                                 plant = state.plantList[index].plant
                             )
@@ -138,10 +139,14 @@ fun PlantListItem(
         state = dismissState,
         modifier = modifier,
         background = {
-            Row {
+            Card(
+                modifier = Modifier.fillMaxSize(),
+                backgroundColor = MaterialTheme.colors.primary,
+            ) {
                 Icon(
                     imageVector = Icons.Default.Delete,
-                    contentDescription = "Delete Icon"
+                    contentDescription = "Delete Icon",
+                    tint = MaterialTheme.colors.secondaryVariant
                 )
             }
         },
