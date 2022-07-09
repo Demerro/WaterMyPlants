@@ -47,6 +47,7 @@ fun SetPlantScreen(
     viewModel: MainViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+    val focus = LocalFocusManager.current
     val coroutineScope = rememberCoroutineScope()
 
     val type = remember { mutableStateOf("") }
@@ -105,7 +106,12 @@ fun SetPlantScreen(
                         onValueChange = { type.value = it },
                         imageVector = Icons.Default.Title,
                         labelText = stringResource(R.string.type),
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        keyboardActions = KeyboardActions(onDone = {
+                            focus.moveFocus(
+                                FocusDirection.Down
+                            )
+                        }),
                     )
                     Row {
                         Box(
@@ -162,6 +168,11 @@ fun SetPlantScreen(
                                 imageVector = Icons.Default.WaterDrop,
                                 labelText = stringResource(R.string.humidity),
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                keyboardActions = KeyboardActions(onDone = {
+                                    focus.moveFocus(
+                                        FocusDirection.Down
+                                    )
+                                }),
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(top = 10.dp)
@@ -184,7 +195,12 @@ fun SetPlantScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(top = 10.dp),
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                keyboardActions = KeyboardActions(onDone = {
+                                    focus.moveFocus(
+                                        FocusDirection.Down
+                                    )
+                                })
                             )
                         }
                     }
@@ -208,14 +224,22 @@ fun SetPlantScreen(
                             onValueChange = { category.value = it },
                             imageVector = Icons.Default.Category,
                             labelText = stringResource(R.string.category),
-                            modifier = Modifier.width(160.dp)
+                            modifier = Modifier.width(160.dp),
+                            keyboardActions = KeyboardActions(onDone = {
+                                focus.moveFocus(
+                                    FocusDirection.Down
+                                )
+                            }),
                         )
                         PlantField(
                             value = plant.value,
                             onValueChange = { plant.value = it },
                             imageVector = Icons.Default.Grass,
                             labelText = stringResource(R.string.plant),
-                            modifier = Modifier.width(160.dp)
+                            modifier = Modifier.width(160.dp),
+                            keyboardActions = KeyboardActions(onDone = {
+                                focus.clearFocus()
+                            }),
                         )
                     }
                     OutlinedButton(
@@ -304,10 +328,9 @@ fun PlantField(
     imageVector: ImageVector,
     labelText: String,
     modifier: Modifier = Modifier,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default
 ) {
-    val focus = LocalFocusManager.current
-
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
@@ -330,7 +353,7 @@ fun PlantField(
             leadingIconColor = MaterialTheme.colors.primary,
             unfocusedBorderColor = MaterialTheme.colors.secondary.copy(0.2f)
         ),
-        keyboardActions = KeyboardActions(onDone = { focus.moveFocus(FocusDirection.Down) }),
+        keyboardActions = keyboardActions,
         keyboardOptions = keyboardOptions
     )
 }

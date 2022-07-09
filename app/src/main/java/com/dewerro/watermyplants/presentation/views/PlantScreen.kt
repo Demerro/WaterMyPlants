@@ -60,7 +60,7 @@ fun PlantScreen(plant: Plant?, viewModel: MainViewModel = hiltViewModel()) {
                     contentDescription = "Plant Image",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .width(200.dp)
+                        .width(170.dp)
                         .clip(Shapes.medium)
                 )
                 Card(

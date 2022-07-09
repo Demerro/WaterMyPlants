@@ -19,14 +19,16 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.net.toUri
 import androidx.navigation.NavHostController
 import com.dewerro.watermyplants.presentation.components.CameraCapture
-import com.dewerro.watermyplants.presentation.utils.executor
 import com.dewerro.watermyplants.presentation.components.takePicture
+import com.dewerro.watermyplants.presentation.utils.executor
 import kotlinx.coroutines.launch
 
 @Composable
 fun CameraScreen(navController: NavHostController) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
+
+    val buttonClickableState = remember { mutableStateOf(true) }
 
     val imageCaptureUseCase by remember {
         mutableStateOf(
@@ -59,15 +61,19 @@ fun CameraScreen(navController: NavHostController) {
         }
         FloatingActionButton(
             onClick = {
-                var photoFileUri: Uri? = null
-                coroutineScope.launch {
-                    photoFileUri = imageCaptureUseCase.takePicture(context.executor).toUri()
-                }.invokeOnCompletion {
-                    navController.previousBackStackEntry?.savedStateHandle?.set(
-                        "photo_file_uri",
-                        photoFileUri
-                    )
-                    navController.navigateUp()
+                if (buttonClickableState.value) {
+                    buttonClickableState.value = false
+
+                    var photoFileUri: Uri? = null
+                    coroutineScope.launch {
+                        photoFileUri = imageCaptureUseCase.takePicture(context.executor).toUri()
+                    }.invokeOnCompletion {
+                        navController.previousBackStackEntry?.savedStateHandle?.set(
+                            "photo_file_uri",
+                            photoFileUri
+                        )
+                        navController.navigateUp()
+                    }
                 }
             },
             modifier = Modifier

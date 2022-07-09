@@ -18,7 +18,7 @@ class AlarmReceiver : BroadcastReceiver() {
     }
 
     private fun createNotification(context: Context) {
-        val color = Color.BLUE
+        val color = Color.CYAN
 
         val builder =
             NotificationCompat.Builder(context, NOTIFICATION_ID_STRING)

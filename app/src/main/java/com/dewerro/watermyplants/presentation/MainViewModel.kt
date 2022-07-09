@@ -71,8 +71,10 @@ class MainViewModel @Inject constructor(private val useCases: PlantUseCases) : V
 
     private fun getAllPlants() {
         getPlantsJob?.cancel()
-        getPlantsJob = useCases.getAllPlantsUseCase().onEach {
-            _state.value = state.value.copy(plantList = it)
+        getPlantsJob = useCases.getAllPlantsUseCase().onEach { plantList ->
+            val categoryList = ArrayList<String>()
+            plantList.forEach { categoryList.add(it.category) }
+            _state.value = state.value.copy(plantList = plantList, categoryList = categoryList)
         }.launchIn(viewModelScope)
     }
 

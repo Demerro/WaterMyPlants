@@ -11,6 +11,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,6 +38,12 @@ fun PlantListScreen(
 ) {
     val state = viewModel.state.value
 
+    val filterTitle = remember { mutableStateOf("") }
+    val filteredPlants = state.plantList.filter {
+        if (filterTitle.value.isEmpty()) true
+        else it.category == filterTitle.value
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
@@ -60,19 +68,28 @@ fun PlantListScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
-
+                    item {
+                        CategoryRowItem(title = stringResource(R.string.all)) {
+                            filterTitle.value = ""
+                        }
+                    }
+                    items(state.categoryList.size) {
+                        CategoryRowItem(title = state.categoryList[it]) {
+                            filterTitle.value = state.categoryList[it]
+                        }
+                    }
                 }
                 LazyVerticalGrid(
                     modifier = Modifier.fillMaxWidth(),
                     columns = GridCells.Fixed(2),
                     content = {
                         items(
-                            state.plantList.size,
-                            { index -> state.plantList[index].hashCode() }) { index ->
+                            filteredPlants.size,
+                            { index -> filteredPlants[index].hashCode() }) { index ->
                             val dismissState = rememberDismissState(
                                 confirmStateChange = {
                                     if (it == DismissValue.DismissedToEnd) {
-                                        viewModel.onEvent(MainEvent.DeletePlant(state.plantList[index]))
+                                        viewModel.onEvent(MainEvent.DeletePlant(filteredPlants[index]))
                                     }
                                     true
                                 }
@@ -80,21 +97,21 @@ fun PlantListScreen(
 
                             PlantListItem(
                                 dismissState = dismissState,
-                                imageUri = state.plantList[index].photoUriString.toUri(),
+                                imageUri = filteredPlants[index].photoUriString.toUri(),
                                 modifier = Modifier
                                     .clickable {
                                         navController.navigate(
                                             Screen.PlantScreen.route +
                                                     "/${
                                                         Json
-                                                            .encodeToString(state.plantList[index])
+                                                            .encodeToString(filteredPlants[index])
                                                             .replace('/', '$')
                                                     }"
                                         )
                                     }
                                     .padding(10.dp),
-                                type = state.plantList[index].type,
-                                plant = state.plantList[index].plant
+                                type = filteredPlants[index].type,
+                                plant = filteredPlants[index].plant
                             )
                         }
                     }
