@@ -227,7 +227,7 @@ fun SetPlantScreen(
                             modifier = Modifier.width(160.dp),
                             keyboardActions = KeyboardActions(onDone = {
                                 focus.moveFocus(
-                                    FocusDirection.Down
+                                    FocusDirection.Right
                                 )
                             }),
                         )

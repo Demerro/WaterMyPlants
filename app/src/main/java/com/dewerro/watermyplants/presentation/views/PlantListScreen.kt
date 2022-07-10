@@ -1,6 +1,7 @@
 package com.dewerro.watermyplants.presentation.views
 
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -88,8 +89,12 @@ fun PlantListScreen(
                             { index -> filteredPlants[index].hashCode() }) { index ->
                             val dismissState = rememberDismissState(
                                 confirmStateChange = {
-                                    if (it == DismissValue.DismissedToEnd) {
+                                    if (it == DismissValue.DismissedToEnd || it == DismissValue.DismissedToStart) {
+                                        Log.i("TAG", "PlantListScreen: ${filteredPlants[index]}")
                                         viewModel.onEvent(MainEvent.DeletePlant(filteredPlants[index]))
+                                        if (filteredPlants.isEmpty()) {
+                                            filterTitle.value = state.categoryList[0]
+                                        }
                                     }
                                     true
                                 }
